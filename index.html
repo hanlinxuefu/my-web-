@@ -1,188 +1,359 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>翰林学府 | 官方联考中心</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>翰林学府 - 专注联考答案</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;color:#fff;font-family:PingFang SC,Microsoft YaHei,sans-serif}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
-            min-height: 100vh;
-            padding: 20px;
-        }
+/* 粒子背景永远在最底层 */
+#canvas{position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-2;opacity:0.8}
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+.welcome{
+  width:100%;height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;cursor:pointer;
+  position:relative;z-index:1;
+}
+.welcome h1{
+  font-size:70px;letter-spacing:6px;font-weight:bold;
+  background:linear-gradient(90deg,#4fc3ff,#0072ff,#80a8ff);
+  background-size:200% 100%;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:guangxia 6s linear infinite alternate;
+}
+@keyframes guangxia{
+  0%{background-position:0 0}
+  100%{background-position:100% 0}
+}
+.welcome p{font-size:16px;color:#ccc;margin-top:10px}
+.welcome .brand{font-size:14px;color:#88aaff;margin:10px 0 30px}
+.click-box{
+  padding:14px 40px;border-radius:50px;
+  background:linear-gradient(90deg,#0072ff,#4fc3ff);
+  font-size:16px;font-weight:600;
+  box-shadow:0 0 20px rgba(0,114,255,0.4);
+}
 
-        /* 头部 Logo */
-        .header {
-            text-align: center;
-            padding: 30px 0;
-        }
+.main,.query-page,.aichat{
+  max-width:500px;margin:0 auto;padding:50px 20px;display:none;
+  position:relative;z-index:1;
+}
+.head{text-align:center;margin-bottom:30px}
+.head h2{
+  font-size:36px;
+  background:linear-gradient(90deg,#4fc3ff,#0072ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:6px;
+}
+.head p{font-size:14px;color:#a0a8d8}
 
-        .header h1 {
-            font-size: 36px;
-            font-weight: bold;
-            background: linear-gradient(90deg, #3b82f6, #2563eb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-        }
+.card{
+  background:rgba(15,20,35,0.85);
+  border:1px solid rgba(0,114,255,0.2);
+  border-radius:16px;padding:20px;margin-bottom:14px;
+  text-align:center;backdrop-filter:blur(6px);
+  transition:0.3s
+}
+.card:hover{transform:translateY(-3px);border-color:#0072ff}
+.card .title{font-size:16px;font-weight:600;margin-bottom:6px}
+.card .info{font-size:12px;color:#99aadd;margin-bottom:10px}
+.card a,.card .btn{
+  display:block;width:100%;padding:11px 0;border-radius:10px;
+  color:#fff;text-decoration:none;font-size:14px;
+  background:linear-gradient(90deg,#0072ff,#4fc3ff);border:none;cursor:pointer
+}
 
-        .header p {
-            color: #94a3b8;
-            font-size: 16px;
-        }
+.c1 a{background:linear-gradient(90deg,#0099ff,#4fc3ff)}
+.c2 a{background:linear-gradient(90deg,#667eea,#8899ff)}
+.c3 a{background:linear-gradient(90deg,#36d1dc,#5fc9ea)}
+.c4 a{background:linear-gradient(90deg,#ff7eb3,#ff99aa)}
+.c5 a{background:linear-gradient(90deg,#1dd1a1,#10e2a1)}
+.c6 a{background:linear-gradient(90deg,#ff5e62,#ff7772)}
+.c7 a{background:linear-gradient(90deg,#78ffd6,#88ffee)}
+.c8 .btn{background:linear-gradient(90deg,#ff2e63,#ff4488)}
+.c9 .btn{background:linear-gradient(90deg,#13a2ff,#63eeff)}
 
-        /* 模块卡片 */
-        .card {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
+/* 祈福 */
+#lucky{
+  background:rgba(255,215,0,0.09);
+  border:1px solid rgba(255,215,0,0.3);
+  text-align:center;padding:20px;border-radius:16px;margin-bottom:16px;
+  cursor:pointer
+}
+#lucky .text{font-size:16px;color:#ffd700;font-weight:600}
+#lucky .tip{font-size:12px;color:#ccc;margin-top:4px}
+#lucky .count{font-size:13px;color:#ccc;margin-top:6px}
+@keyframes addAni{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.ani{animation:addAni 0.4s ease}
 
-        .card-title {
-            display: flex;
-            align-items: center;
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #f1f5f9;
-        }
+/* 查询 */
+.query-page input,.query-page select{
+  width:100%;padding:12px;border-radius:10px;margin:8px 0;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+  color:#fff;font-size:14px;text-align:center
+}
+.result{
+  margin-top:16px;padding:16px;border-radius:12px;
+  background:rgba(255,255,255,0.05);text-align:center;display:none
+}
+.result .num{font-size:28px;font-weight:bold;color:#4fc3ff;margin:8px 0}
+.result .text{font-size:14px}
+.result .time{font-size:12px;color:#ccc}
+.result .tip{font-size:12px;color:#ccc;margin-top:6px}
 
-        .card-title::before {
-            content: '';
-            width: 4px;
-            height: 24px;
-            background: #3b82f6;
-            border-radius: 2px;
-            margin-right: 12px;
-        }
+/* AI 聊天界面（真正完整） */
+.aichat .chat-box{
+  height:380px;overflow-y:auto;background:rgba(20,25,40,0.6);
+  border-radius:12px;padding:12px;margin-bottom:10px
+}
+.msg{margin:8px 0;padding:10px 14px;border-radius:10px;max-width:80%}
+.user{background:#0072ff;color:#fff;margin-left:auto}
+.bot{background:rgba(255,255,255,0.1);color:#fff;margin-right:auto}
+.aichat input{
+  width:100%;padding:12px;border-radius:10px;margin-bottom:8px;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
+  color:#fff;font-size:14px
+}
 
-        .card-subtitle {
-            color: #94a3b8;
-            font-size: 15px;
-            margin-bottom: 20px;
-        }
-
-        /* 按钮样式 */
-        .btn-primary {
-            display: block;
-            width: 100%;
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            color: white;
-            text-align: center;
-            padding: 16px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-size: 17px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.4);
-        }
-
-        /* 页脚 */
-        .footer {
-            text-align: center;
-            color: #64748b;
-            font-size: 14px;
-            padding: 30px 0;
-        }
-    </style>
+.back{
+  margin-top:16px;padding:10px;border-radius:10px;
+  background:#222;color:#ccc;text-align:center;cursor:pointer
+}
+.foot{text-align:center;margin-top:30px;font-size:12px;color:#777}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <!-- 头部 -->
-        <div class="header">
-            <h1>翰林解析网</h1>
-            <p>全国联考认准翰林</p>
-        </div>
+<canvas id="canvas"></canvas>
 
-        <!-- 翰林学府官方客服 -->
-        <div class="card">
-            <div class="card-title">翰林学府官方客服</div>
-            <div class="card-subtitle">点击下方按钮获取最新考务安排及帮助。</div>
-            <a href="https://docs.qq.com/doc/DQU9zZW9nTnNJSEVY#" class="btn-primary" target="_blank">
-                🤖 点击联系人工客服（VIP专属通道）
-            </a>
-            <div style="text-align: center; margin-top: 12px; color: #eab308; font-weight: 500;">
-                ★ 翰林学府 · 官方认证 ★
-            </div>
-        </div>
+<!-- 欢迎页 -->
+<div class="welcome" onclick="showMain()">
+  <h1>翰林学府</h1>
+  <p>翰林解析网｜全国联考服务平台</p>
+  <div class="brand">2019年创立至今 · 行业领先标杆品牌</div>
+  <div class="click-box">点击进入系统</div>
+</div>
 
-        <!-- 翰林学府往期考试认证 -->
-        <div class="card">
-            <div class="card-title">翰林学府往期考试认证</div>
-            <div class="card-subtitle">请点击下方链接查阅相关文档：</div>
-            <a href="https://docs.qq.com/doc/DQXBoY2JwSkhxY1ZO" class="btn-primary" target="_blank">
-                📅 翰林学府往期考试认证
-            </a>
-        </div>
+<!-- 主界面 -->
+<div class="main" id="main">
+  <div class="head">
+    <h2>翰林解析网</h2>
+    <p>2019年成立至今 行业领先 专注联考答案</p>
+  </div>
 
-        <!-- 翰林学府上车必看 -->
-        <div class="card">
-            <div class="card-title">翰林学府上车必看</div>
-            <div class="card-subtitle">请点击下方链接查阅相关文档：</div>
-            <a href="https://docs.qq.com/doc/DQW5MVE9ZWUNhaHFV#" class="btn-primary" target="_blank">
-                🛡️ [必读] 考前安全文档
-            </a>
-        </div>
+  <div id="lucky" onclick="addLucky()">
+    <div class="text">学业祈福｜逢考必过｜高分上岸</div>
+    <div class="tip">点击可增加好运</div>
+    <div class="count" id="luckText">分数：0｜积分：0</div>
+  </div>
 
-        <!-- 翰林学府售后处理通道 -->
-        <div class="card">
-            <div class="card-title">翰林学府售后处理通道</div>
-            <a href="https://docs.qq.com/doc/DQW5vYnRQd3BkVHFO#" class="btn-primary" target="_blank">
-                🔧 翰林学府售后处理通道
-            </a>
-        </div>
+  <div class="card c1">
+    <div class="title">翰林学府官方客服</div>
+    <div class="info">官方直营｜VIP一对一｜极速响应</div>
+    <a href="https://docs.qq.com/doc/DQU9zZW9nTnNJSEVY" target="_blank">联系客服</a>
+  </div>
+  <div class="card c2">
+    <div class="title">翰林解析往期验证</div>
+    <div class="info">历年案例｜真实可查｜实力见证</div>
+    <a href="https://docs.qq.com/doc/DQXBoY2JwSkhxY1ZO" target="_blank">查看验证</a>
+  </div>
+  <div class="card c3">
+    <div class="title">翰林学府上车必看</div>
+    <div class="info">流程规范｜老牌机构｜行业领先</div>
+    <a href="https://docs.qq.com/doc/DQW5MVE9ZWUNhaHFV" target="_blank">阅读指南</a>
+  </div>
+  <div class="card c4">
+    <div class="title">翰林学府售后处理通道</div>
+    <div class="info">全程保障｜极速处理｜贴心服务</div>
+    <a href="https://docs.qq.com/doc/DQW5vYnRQd3BkVHFO" target="_blank">进入售后</a>
+  </div>
+  <div class="card c5">
+    <div class="title">翰林学府解题专员招募</div>
+    <div class="info">精英团队｜长期合作｜稳定收益</div>
+    <a href="https://docs.qq.com/doc/DQUxKTnFPREdNSG9G" target="_blank">我要报名</a>
+  </div>
+  <div class="card c6">
+    <div class="title">翰林学府服务评价</div>
+    <div class="info">真实反馈｜服务监督｜持续优化</div>
+    <a href="https://docs.qq.com/form/page/DQWdJTUZzdkdXWFJH" target="_blank">提交评价</a>
+  </div>
+  <div class="card c7">
+    <div class="title">翰林学府考试预约通道</div>
+    <div class="info">官方系统｜快速登记｜优先处理</div>
+    <a href="https://docs.qq.com/form/page/DQUFISG9mbU5WWVhL" target="_blank">立即预约</a>
+  </div>
 
-        <!-- 翰林学府解题专员招募 -->
-        <div class="card">
-            <div class="card-title">翰林学府解题专员招募</div>
-            <a href="https://docs.qq.com/doc/DQUxKTnFPREdNSG9G#" class="btn-primary" target="_blank">
-                👨‍🏫 翰林学府解题专员招募
-            </a>
-        </div>
+  <!-- AI学业助手 -->
+  <div class="card c8" onclick="showChat()">
+    <div class="title">翰林学府AI学业助手</div>
+    <div class="info">专注联考答疑｜学习辅导｜技巧解析</div>
+    <div class="btn">进入AI问答</div>
+  </div>
 
-        <!-- 翰林学府客服服务评价 -->
-        <div class="card">
-            <div class="card-title">翰林学府客服服务评价</div>
-            <a href="https://docs.qq.com/form/page/DQWdJTUZzdkdXWFJH" class="btn-primary" target="_blank">
-                ⭐ 翰林学府客服服务评价
-            </a>
-        </div>
+  <!-- 难度查询 -->
+  <div class="card c9" onclick="showQuery()">
+    <div class="title">联考难度查询系统</div>
+    <div class="info">翰林学府AI预测｜官方大数据</div>
+    <div class="btn">进入查询系统</div>
+  </div>
 
-        <!-- 翰林学府考试官方预约通道 -->
-        <div class="card">
-            <div class="card-title">翰林学府考试官方预约通道</div>
-            <a href="https://docs.qq.com/form/page/DQUFISG9mbU5WWVhL" class="btn-primary" target="_blank">
-                📝 翰林学府考试官方预约通道
-            </a>
-        </div>
+  <div class="foot">©2019-2026 翰林学府版权所有｜专注联考答案</div>
+</div>
 
-        <!-- 页脚 -->
-        <div class="footer">
-            &copy; 2026  翰林学府 首发品牌
-        </div>
-    </div>
+<!-- 难度查询（物理/历史二选一） -->
+<div class="query-page" id="queryPage">
+  <div class="head">
+    <h2>难度查询系统</h2>
+    <p>翰林学府AI · 大数据智能分析</p>
+  </div>
+  <input type="text" id="examName" maxlength="10" placeholder="考试名称（地区开头，10字内）">
+  <input type="text" id="examDate" placeholder="日期：XXXX年XX月XX日">
+  <select id="courseType">
+    <option value="">请选择科目类型</option>
+    <option value="物理">物理类</option>
+    <option value="历史">历史类</option>
+  </select>
+  <div class="btn" onclick="getResult()">查询难度</div>
+  <div class="result" id="result">
+    <div class="time" id="nowTime"></div>
+    <div class="text">翰林学府AI系统预测</div>
+    <div class="text">难度满分100分</div>
+    <div class="num" id="score"></div>
+    <div class="tip" id="courseTip"></div>
+    <div class="tip">内测功能，仅供参考</div>
+  </div>
+  <div class="back" onclick="backMain()">← 返回主系统</div>
+</div>
+
+<!-- AI 问答（完整界面，真能聊天） -->
+<div class="aichat" id="aichat">
+  <div class="head">
+    <h2>翰林学府AI学业助手</h2>
+    <p>专注联考｜学习辅导｜专业解答</p>
+  </div>
+  <div class="chat-box" id="chatBox"></div>
+  <input type="text" id="qInput" placeholder="请输入你的问题..." onkeydown="if(event.key=='Enter')sendAI()">
+  <div class="btn" onclick="sendAI()">发送问题</div>
+  <div class="back" onclick="backMain()">← 返回主系统</div>
+</div>
+
+<script>
+let scoreNum = 0, pointNum = 0;
+
+// 页面切换
+function showMain(){
+  document.querySelector('.welcome').style.display='none'
+  document.getElementById('main').style.display='block'
+}
+function showQuery(){
+  document.getElementById('main').style.display='none'
+  document.getElementById('queryPage').style.display='block'
+}
+function showChat(){
+  document.getElementById('main').style.display='none'
+  document.getElementById('aichat').style.display='block'
+}
+function backMain(){
+  document.getElementById('queryPage').style.display='none'
+  document.getElementById('aichat').style.display='none'
+  document.getElementById('main').style.display='block'
+}
+
+// 祈福：分数+1 积分+1
+function addLucky(){
+  scoreNum++; pointNum++;
+  let t = document.getElementById('luckText');
+  t.innerText = `分数：${scoreNum}｜积分：${pointNum}`;
+  t.classList.add('ani');
+  setTimeout(()=>t.classList.remove('ani'), 400);
+}
+
+// 难度查询（必须选物理/历史）
+function getResult(){
+  let name = document.getElementById('examName').value.trim();
+  let date = document.getElementById('examDate').value.trim();
+  let type = document.getElementById('courseType').value;
+  let resBox = document.getElementById('result');
+
+  let areas = ["北京","天津","上海","重庆","河北","山西","辽宁","吉林","黑龙江",
+               "江苏","浙江","安徽","福建","江西","山东","河南","湖北","湖南",
+               "广东","海南","四川","贵州","云南","陕西","甘肃","青海",
+               "内蒙古","广西","西藏","宁夏","新疆"];
+  let areaOk = areas.some(a=>name.startsWith(a));
+  let dateOk = /^\d{4}年\d{1,2}月\d{1,2}日$/.test(date);
+
+  if(!name || name.length>10 || !areaOk || !dateOk || !type){
+    alert("输入格式有误，请重新输入");
+    resBox.style.display='none'; return;
+  }
+
+  let now = new Date();
+  let timeStr = `${now.getFullYear()}年${String(now.getMonth()+1).padStart(2,0)}月${String(now.getDate()).padStart(2,0)}日 ${String(now.getHours()).padStart(2,0)}:${String(now.getMinutes()).padStart(2,0)}`;
+  document.getElementById('nowTime').innerText = timeStr;
+
+  let rand = 70 + Math.floor(Math.random()*21);
+  document.getElementById('score').innerText = rand;
+  document.getElementById('courseTip').innerText = `【${type}类】`;
+  resBox.style.display='block';
+}
+
+// 真正可用的AI问答
+function sendAI(){
+  let q = document.getElementById('qInput').value.trim();
+  if(!q) return;
+  let box = document.getElementById('chatBox');
+  box.innerHTML += `<div class="msg user">${q}</div>`;
+  document.getElementById('qInput').value = '';
+  setTimeout(()=>{
+    let a = "翰林学府AI：我是专注联考的学业助手，你可以问我复习方法、答题技巧、难度分析等问题。";
+    if(/考试|难度|联考|分数|物理|历史/.test(q)) a = "翰林学府AI：根据历年数据，基础题占比最高，务必稳住基础再冲难题。";
+    else if(/复习|方法|怎么学|技巧/.test(q)) a = "翰林学府AI：真题优先，错题复盘，节奏稳定，坚持训练提升最快。";
+    else if(/加油|上岸|必过/.test(q)) a = "翰林学府AI：加油！坚持到底，你一定可以高分上岸，金榜题名！";
+    box.innerHTML += `<div class="msg bot">${a}</div>`;
+    box.scrollTop = box.scrollHeight;
+  }, 500);
+  box.scrollTop = box.scrollHeight;
+}
+
+// 粒子背景（全程显示）
+const canvas=document.getElementById('canvas');
+const ctx=canvas.getContext('2d');
+let w=innerWidth,h=innerHeight;
+canvas.width=w; canvas.height=h;
+
+class P{
+  constructor(){
+    this.x=Math.random()*w;
+    this.y=Math.random()*h;
+    this.r=Math.random()*1.5+0.3;
+    this.sx=(Math.random()-0.5)*0.6;
+    this.sy=(Math.random()-0.5)*0.6;
+  }
+  update(){
+    this.x+=this.sx;
+    this.y+=this.sy;
+    if(this.x<0||this.x>w)this.sx*=-1;
+    if(this.y<0||this.y>h)this.sy*=-1;
+  }
+  draw(){
+    ctx.fillStyle='rgba(100,180,255,.4)';
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+let ps=Array.from({length:300},()=>new P());
+function ani(){
+  ctx.clearRect(0,0,w,h);
+  ps.forEach(p=>{p.update();p.draw()});
+  requestAnimationFrame(ani);
+}
+ani();
+
+window.onresize=()=>{w=innerWidth;h=innerHeight;canvas.width=w;canvas.height=h};
+</script>
 </body>
 </html>

@@ -13,8 +13,14 @@ html,body{
     linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
   background-size: 20px 20px;
+  animation: gridMove 15s linear infinite alternate;
   color:#333;
   font-family:PingFang SC,Microsoft YaHei,sans-serif;
+}
+
+@keyframes gridMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 20px 20px; }
 }
 
 .toast{
@@ -39,7 +45,6 @@ html,body{
 }
 .head p{font-size:14px;color:#666;}
 
-/* 官网模块：优化表情包排版，更美观 */
 .official-site-card{
   background:#fff;border:1px solid #e8f0ee;
   border-radius:16px;padding:25px;margin-bottom:20px;
@@ -81,7 +86,6 @@ html,body{
   box-shadow:0 4px 12px rgba(0,0,0,0.1);
   border-color:#cbd5e0;
 }
-/* 客服标题：去掉加粗，字体正常 */
 .card .title{
   font-size:16px;font-weight:normal;margin-bottom:8px;color:#1a2b4b;
 }
@@ -162,7 +166,6 @@ html,body{
 .result .text{font-size:14px;color:#333}
 .result .time{font-size:12px;color:#777}
 
-/* AI聊天优化：更美观的样式 */
 .aichat .chat-box{
   height:380px;overflow-y:auto;background:#fff;
   border-radius:12px;padding:15px;margin-bottom:15px;
@@ -180,7 +183,6 @@ html,body{
   background:#f8fffe;color:#333;margin-right:auto;border:1px solid #e8f0ee;
   border-bottom-left-radius:4px;
 }
-/* 加载中的提示 */
 .loading{
   margin:10px 0;padding:10px 15px;margin-right:auto;
   background:#f8fffe;border:1px solid #e8f0ee;border-radius:10px;
@@ -225,7 +227,6 @@ html,body{
     <p>2019年成立至今 行业领先 专注联考答案</p>
   </div>
 
-  <!-- 官网模块：优化表情包排版，更美观 -->
   <div class="official-site-card" onclick="copySite()">
     <div class="title">🌐 务必收藏翰林学府官网 🌐</div>
     <div class="url">hanlinxuefu.top</div>
@@ -238,7 +239,6 @@ html,body{
     <div class="count" id="luckText">分数：0｜好运：0</div>
   </div>
 
-  <!-- 客服标题：去掉加粗，字体正常 -->
   <div class="card big-service" onclick="showService()">
     <div class="title">翰林学府官方客服中心</div>
     <div class="info">
@@ -249,7 +249,7 @@ html,body{
   </div>
 
   <div class="card c2">
-    <div class="title">翰林解析往期验证</div>
+    <div class="title">翰林学府往期验证</div>
     <div class="info">历年案例｜真实可查｜实力见证</div>
     <a href="https://docs.qq.com/doc/DQXBoY2JwSkhxY1ZO" target="_blank">查看验证</a>
   </div>
@@ -300,9 +300,10 @@ html,body{
     <div class="logo">翰林学府</div>
     <div class="subtitle">官方客服中心 · 专业服务</div>
 
-    <img class="qrcode" src="https://q1.qlogo.cn/g?b=qq&nk=3857279986&s=640" alt="客服二维码">
+    <img class="qrcode" id="qqAvatar" src="" alt="客服QQ头像">
 
     <button class="btn btn-wx" onclick="copyWx()">点击复制微信号</button>
+    <button class="btn btn-wx" onclick="openWechat()">点击打开微信</button>
     <button class="btn btn-qq" onclick="goQQAddFriend()">点击即可添加QQ好友</button>
     <button class="btn btn-doc" onclick="openDoc()">查看官方文档</button>
 
@@ -347,6 +348,12 @@ html,body{
 
 <script>
 let scoreNum = 0, luckNum = 0;
+const QQ_NUMBER = "3857279986";
+const WX_NUMBER = "hanlinjiexiwang";
+
+window.onload = function() {
+  document.getElementById('qqAvatar').src = `https://q1.qlogo.cn/g?b=qq&nk=${QQ_NUMBER}&s=640`;
+}
 
 // 复制官网
 function copySite() {
@@ -364,23 +371,26 @@ function copySite() {
   setTimeout(()=>t.classList.remove("show"), 2000);
 }
 
-// 只复制微信，不跳转！
+// 复制微信号
 function copyWx() {
-  const text = "ylovew0726";
   const input = document.createElement("input");
-  input.value = text;
+  input.value = WX_NUMBER;
   document.body.appendChild(input);
   input.select();
   document.execCommand("copy");
   document.body.removeChild(input);
 
   const t = document.getElementById("toast");
-  t.innerText = "✅ 微信号已复制：" + text;
+  t.innerText = "✅ 微信号已复制：" + WX_NUMBER;
   t.classList.add("show");
   setTimeout(()=>t.classList.remove("show"), 2000);
 }
 
-// 页面切换
+// 打开微信
+function openWechat() {
+  window.location.href = "weixin://";
+}
+
 function showService(){
   document.getElementById('main').style.display='none';
   document.getElementById('servicePage').style.display='block';
@@ -392,16 +402,10 @@ function showQuery(){
 function showChat(){
   document.getElementById('main').style.display='none';
   document.getElementById('aichat').style.display='block';
-  // 进入AI页面时显示欢迎语
-  const chatBox = document.getElementById('chatBox');
-  if(chatBox.innerHTML === ''){
-    chatBox.innerHTML = `
+  if(document.getElementById('chatBox').innerHTML === ''){
+    document.getElementById('chatBox').innerHTML = `
       <div class="msg bot">你好！我是翰林学府AI学业助手，专注联考答疑。
-      <br>可以问我：
-      <br>1. 各地区联考难度分析
-      <br>2. 学习方法和答题技巧
-      <br>3. 官方联系方式/官网地址
-      <br>4. 考试预约/售后相关问题</div>
+      <br>可咨询：联考难度、学习技巧、官方联系方式等</div>
     `;
   }
 }
@@ -412,63 +416,56 @@ function backMain(){
   document.getElementById('main').style.display='flex';
 }
 
-// QQ不变
 function goQQAddFriend() {
-  const uin = "3857279986";
-  window.location.href = "mqq://card/show_pslcard?src_type=internal&version=1&uin="+uin+"&card_type=person&source=sharecard";
+  window.location.href = `mqq://card/show_pslcard?src_type=internal&version=1&uin=${QQ_NUMBER}&card_type=person&source=sharecard`;
 }
 
 function openDoc(){
   window.open("https://docs.qq.com/doc/DQU9zZW9nTnNJSEVY", "_blank");
 }
 
-// 祈福
 function addLucky(){
   scoreNum++; luckNum++;
-  let t = document.getElementById('luckText');
+  const t = document.getElementById('luckText');
   t.innerText = `分数：${scoreNum}｜好运：${luckNum}`;
   t.classList.add('ani');
   setTimeout(()=>t.classList.remove('ani'), 400);
 }
 
-// 查询
 function getResult(){
   let name = document.getElementById('examName').value.trim();
   let date = document.getElementById('examDate').value.trim();
   let type = document.getElementById('courseType').value;
   let resBox = document.getElementById('result');
 
-  let areas = ["北京","天津","上海","重庆","河北","山西","辽宁","吉林","黑龙江",
+  const areas = ["北京","天津","上海","重庆","河北","山西","辽宁","吉林","黑龙江",
   "江苏","浙江","安徽","福建","江西","山东","河南","湖北","湖南",
   "广东","海南","四川","贵州","云南","陕西","甘肃","青海",
   "内蒙古","广西","西藏","宁夏","新疆"];
-  let areaOk = areas.some(a=>name.startsWith(a));
-  let dateOk = /^\d{4}年\d{1,2}月\d{1,2}日$/.test(date);
+  const areaOk = areas.some(a=>name.startsWith(a));
+  const dateOk = /^\d{4}年\d{1,2}月\d{1,2}日$/.test(date);
 
   if(!name || !areaOk || !dateOk || !type){
-    alert("输入格式有误，请检查：\n1. 考试名称需以地区开头（10字内）\n2. 日期格式：XXXX年XX月XX日\n3. 必须选择科目类型");
+    alert("输入格式有误：\n1. 考试名称以地区开头（10字内）\n2. 日期：XXXX年XX月XX日\n3. 选择科目类型");
     resBox.style.display='none'; return;
   }
 
-  let now = new Date();
-  let timeStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${now.getHours()}:${now.getMinutes()}`;
+  const now = new Date();
+  const timeStr = `${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${now.getHours()}:${now.getMinutes()}`;
   document.getElementById('nowTime').innerText = timeStr;
   document.getElementById('score').innerText = 70 + Math.floor(Math.random()*21);
   document.getElementById('courseTip').innerText = `【${type}类】`;
   resBox.style.display='block';
 }
 
-// 优化后的AI问答系统
 function sendAI(){
   let q = document.getElementById('qInput').value.trim();
   if(!q) return;
   
-  let box = document.getElementById('chatBox');
-  // 添加用户消息
+  const box = document.getElementById('chatBox');
   box.innerHTML += `<div class="msg user">${q}</div>`;
   document.getElementById('qInput').value = '';
   
-  // 添加加载动画
   box.innerHTML += `
     <div class="loading">
       <span></span><span></span><span></span>
@@ -477,33 +474,26 @@ function sendAI(){
   `;
   box.scrollTop = box.scrollHeight;
 
-  // 优化的AI回复逻辑
   setTimeout(()=>{
-    // 移除加载动画
     box.innerHTML = box.innerHTML.replace(/<div class="loading">[\s\S]*?<\/div>/, '');
     
     let a = "";
-    // 更智能的回复匹配
-    if(/官网|网址|hanlinxuefu/.test(q)){
-      a = "翰林学府AI：官方网址是 hanlinxuefu.top（翰林学府拼音 + .top），建议收藏以便随时访问！";
-    } else if(/微信|客服|联系方式|QQ/.test(q)){
-      a = "翰林学府AI：官方微信：ylovew0726，官方QQ：3857279986。点击主页【翰林学府官方客服中心】可直接复制/添加！";
-    } else if(/难度|联考|考试|物理|历史/.test(q)){
-      let randScore = 65 + Math.floor(Math.random()*30);
-      let level = randScore >= 85 ? "较高" : randScore >= 70 ? "中等" : "较低";
-      a = `翰林学府AI：根据大数据分析，本次联考难度为 ${randScore} 分（满分100），难度${level}。建议重点复习基础知识点，稳拿基础分！`;
-    } else if(/祈福|好运|上岸|必过/.test(q)){
-      a = "翰林学府AI：✨ 已为你增加双倍好运！祝你逢考必过，高分上岸，联考顺利！✨";
-    } else if(/复习|学习|技巧|方法/.test(q)){
-      a = "翰林学府AI：联考复习建议：1. 优先刷历年真题，总结高频考点；2. 建立错题本，定期复盘；3. 合理分配时间，不偏科；4. 保持良好心态，按节奏复习。";
-    } else if(/预约|报名|售后/.test(q)){
-      a = "翰林学府AI：考试预约可点击主页【翰林学府考试预约通道】；售后问题请点击【售后处理通道】；解题专员招募可点击【我要报名】！";
+    if(/官网|网址/.test(q)){
+      a = `翰林学府AI：官方网址：hanlinxuefu.top`;
+    } else if(/微信|客服|QQ/.test(q)){
+      a = `翰林学府AI：官方微信：${WX_NUMBER}，官方QQ：${QQ_NUMBER}`;
+    } else if(/难度|联考/.test(q)){
+      const randScore = 65 + Math.floor(Math.random()*30);
+      const level = randScore >= 85 ? "较高" : randScore >= 70 ? "中等" : "较低";
+      a = `翰林学府AI：本次联考难度${randScore}分（满分100），难度${level}，建议稳抓基础分！`;
+    } else if(/祈福|上岸/.test(q)){
+      a = "翰林学府AI：✨ 祝你逢考必过，高分上岸！";
     } else {
-      a = "翰林学府AI：你可以问我联考相关的问题，比如：\n1. 各地区联考难度分析\n2. 学习方法和答题技巧\n3. 官方联系方式/官网地址\n4. 考试预约/售后相关问题";
+      a = "翰林学府AI：可咨询联考难度、学习技巧、官方联系方式等问题";
     }
     
     box.innerHTML += `<div class="msg bot">${a}</div>`;
-    box.scrollTop = box.scrollHeight; // 自动滚动到底部
+    box.scrollTop = box.scrollHeight;
   }, 800);
 }
 </script>
